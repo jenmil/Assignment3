@@ -1,0 +1,140 @@
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.*;
+
+
+import model.MyoaStory;
+
+public class MyoaGui extends JPanel{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5726988697266110395L;
+	private static JTextField textField;
+	static File file;
+	protected static int count = 0; 
+	
+	public MyoaGui(){	
+	}
+	static JRadioButton abyssalForest = new JRadioButton("The Abyssal Forest");
+	static JRadioButton testStory = new JRadioButton("Test Story");
+	
+	
+	public static void main(String[] args) {
+		final MyoaStory story = new MyoaStory();
+		final MyoaGui guiMethods = new MyoaGui();
+		
+		ButtonGroup group = new ButtonGroup();
+		group.add(abyssalForest);			 New function
+		group.add(testStory);
+		
+		abyssalForest.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				file = new File("The Abyssal Forest.txt");
+			}
+			
+		});
+		
+		testStory.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				file = new File("testStory.txt");
+			}
+			
+		});
+		
+		
+		JFrame guiFrame = new JFrame("Make Your Own Adventure");
+		guiFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JPanel contentPane = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		final JTextArea textArea = new JTextArea(30,60);
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		c.anchor=GridBagConstraints.NORTHWEST;
+		c.gridx = 0;
+		c.gridy = 0;
+		JScrollPane scroller = new JScrollPane(textArea);
+		contentPane.add(scroller, c);
+		
+		
+		
+		textField = new JTextField(50);
+		c.anchor = GridBagConstraints.SOUTHWEST;
+		c.insets = new Insets(10,0,0,0);
+		c.gridx = 0;
+		c.gridy= 1;
+		contentPane.add(textField, c);
+		
+		
+		JButton button = new JButton("Enter");
+		button.addActionListener(new ActionListener(){
+
+			
+
+			@Override //Continues the story on button push
+			public void actionPerformed(ActionEvent arg0) {
+				String text = textField.getText();
+				if(!text.isEmpty()){
+				textArea.append("\n" + text + "\n");
+				}
+				try {
+					String storyLine = story.readStory(file,count);
+					textArea.append(storyLine);
+					count ++;
+				} catch (IOException e) {
+					textArea.append("No file");
+				}
+				  catch (IndexOutOfBoundsException e){
+					  textArea.append("\n" + "Game Over \n");
+				  }
+				textField.setText(null);
+			} 
+		
+		});
+		
+		JButton resetButton = new JButton("reset");
+		resetButton.addActionListener(new ActionListener(){
+
+			
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				count = 0;
+				textArea.append("Game has been reset \n");
+				
+			}
+			
+		});
+		
+		
+		c.anchor = GridBagConstraints.SOUTHEAST;
+		contentPane.add(button, c);
+		
+		
+		
+		c.anchor = GridBagConstraints.EAST;
+		contentPane.add(abyssalForest);
+		contentPane.add(testStory);
+		contentPane.add(resetButton);
+		
+		
+		guiFrame.add(contentPane);
+		guiFrame.pack();
+		guiFrame.setVisible(true);
+
+	}
+
+}
