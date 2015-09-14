@@ -43,11 +43,6 @@ public class MyoaGui extends JPanel {
 		formatTextField();
 		PushedReset();
 		formatEnterButton();
-		
-
-		
-
-		c.anchor = GridBagConstraints.EAST;
 	}
 
 
